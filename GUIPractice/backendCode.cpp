@@ -2,7 +2,6 @@
 #include <atlstr.h>
 
 // Improves readability
-// Test
 using namespace std;
 using namespace cv;
 
