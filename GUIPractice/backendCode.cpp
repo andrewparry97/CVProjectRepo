@@ -110,7 +110,6 @@ Mat draw_horizontal(vector<double> histogram, double vScale, int pixelCount, int
 				if (i == cThreshold) {
 					rectangle(
 						outputHist,
-						//Point((i + 30)*SCALE, histHeight - 10 * SCALE + mark),
 						Point((i + 30)*SCALE, histHeight - 10 * SCALE),
 						Point((i + 30)*SCALE, 0 - 10 * SCALE),
 						Scalar(200, 200, 200),
@@ -120,7 +119,6 @@ Mat draw_horizontal(vector<double> histogram, double vScale, int pixelCount, int
 			}
 			rectangle(
 				outputHist,
-				//Point((i + 30)*SCALE, histHeight - 10 * SCALE + mark),
 				Point((i + 30)*SCALE, histHeight - 10 * SCALE + mark),
 				Point(SCALE + (i + 30)*SCALE, (histHeight - percentage * dataScale) - 10 * SCALE),
 				Scalar(0, 0, 0),
@@ -182,24 +180,24 @@ double find_variance(vector<double> histogram, double mean, int pixels, int star
 
 // Count spots in an image
 vector<imageContents> count_spots(vector<imageContents> imageStore, int i, Mat image, int cThreshold) {
-	Mat thresh_image;
+	int count = 0, imageSize;
+	Mat thresh_image, drawing;
 	RNG rng(12345);
 	Mat test_image = image; 
-	thresh_image = test_image;
-	blur(thresh_image, thresh_image, Size(3, 3));
-
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
+	thresh_image = test_image;
 
+	blur(thresh_image, thresh_image, Size(3, 3));
 	threshold(thresh_image, thresh_image, cThreshold, MAX_INTENSITY - 1, THRESH_BINARY);
-
 	findContours(thresh_image, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
-	Mat drawing = Mat::zeros(thresh_image.size(), CV_8UC3);
-	int count = 0; 
+	imageSize = image.rows*image.cols;
+	imageSize = imageSize / 5;
+	drawing = Mat::zeros(thresh_image.size(), CV_8UC3);
 	for (int i = 0; i< contours.size(); i++)
 	{
-		if (contours[i].size() > 1) {
+		if (contours[i].size() > 2 && contourArea(contours[i]) < imageSize) {
 			Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
 			drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point());
 			count++;
@@ -213,7 +211,7 @@ vector<imageContents> count_spots(vector<imageContents> imageStore, int i, Mat i
 // Update scores
 vector<imageContents> update_scores(int spots, double variance, double mean, vector<imageContents> imageStore, int i) {
 	double spot, film, aesthetic;
-	spot = 10 - 10 * ((double)spots / 60);
+	spot = 10 - 10 * ((double)spots / 50);
 	if (spot > 10) {
 		spot = 10;
 	}

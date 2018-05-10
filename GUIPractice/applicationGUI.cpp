@@ -291,7 +291,7 @@ void applicationGUI::saveResults() {
 		save_statistics(imageStore[currentImage].pixelCount, imageStore[currentImage].meanAll, imageStore[currentImage].stdDevAll,
 			imageStore[currentImage].varAll, "all", imageStore[currentImage].fileName, conversionDirectory);
 		save_statistics(imageStore[currentImage].pixelAbove, imageStore[currentImage].meanAbove, imageStore[currentImage].stdDevAbove,
-			imageStore[currentImage].varAbove, "all", imageStore[currentImage].fileName, conversionDirectory);
+			imageStore[currentImage].varAbove, "above/equal", imageStore[currentImage].fileName, conversionDirectory);
 		save_scores(imageStore[currentImage].spotScore, imageStore[currentImage].filmScore, imageStore[currentImage].aestheticScore,
 			imageStore[currentImage].fileName, conversionDirectory);
 
@@ -328,7 +328,7 @@ void applicationGUI::saveAll() {
 			save_statistics(imageStore[i].pixelCount, imageStore[i].meanAll, imageStore[i].stdDevAll,
 				imageStore[i].varAll, "all", imageStore[i].fileName, currentDirectory);
 			save_statistics(imageStore[i].pixelAbove, imageStore[i].meanAbove, imageStore[i].stdDevAbove,
-				imageStore[i].varAbove, "all", imageStore[i].fileName, currentDirectory);
+				imageStore[i].varAbove, "above/equal", imageStore[i].fileName, currentDirectory);
 			save_scores(imageStore[i].spotScore, imageStore[i].filmScore, imageStore[i].aestheticScore,
 				imageStore[i].fileName, currentDirectory);
 			file << "Statistics/results of image | " << imageStore[i].fileName << " | saved at | " << currentDirectory << " |" << std::endl;
