@@ -1,3 +1,4 @@
+// Include header files
 #include "backendCode.h"
 #include <atlstr.h>
 
@@ -297,7 +298,7 @@ void save_scores(double spot, double film, double aesthetic, string fileName, st
 	file.close();
 }
 
-// Main method for sequence of functions
+// Function to process a directory of images
 vector<imageContents> process_all(string directory, double dataScale, int perXScale, int cThreshold, int pixelPercentage, bool showThreshold, bool smoothedLine, bool perIntensity, bool lineGraph) {
 	
 	// Declare all variables
@@ -385,6 +386,7 @@ vector<imageContents> process_all(string directory, double dataScale, int perXSc
 	return imageStore;
 }
 
+// Function to process a single image
 vector<imageContents> process_image(string fileLoc, double dataScale, int perXScale, int cThreshold, int pixelPercentage, bool showThreshold, bool smoothedLine, bool perIntensity, bool lineGraph) {
 	// Declare all variables
 	String location;

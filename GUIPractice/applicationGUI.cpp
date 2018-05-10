@@ -1,3 +1,4 @@
+// Include neccessary libraries
 #include "applicationGUI.h"
 #include "histogramSettingsDialog.h"
 #include "logFileDisplay.h"
@@ -10,8 +11,10 @@
 #include <QDir>
 #include <vector>
 
-
+// Vector of structure type 'imageContents'
 std::vector<imageContents> imageStore;
+
+// Global variables
 int currentImage = 1, sortType = 0;
 QString imageName;
 QString dir_name;
@@ -25,6 +28,7 @@ bool showThreshold = false, smoothedLine = false, perIntensity = true, lineGraph
 bool singleFile = false;
 bool viewThresh = false;
 
+// Function for launching the application GUI
 applicationGUI::applicationGUI(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -42,6 +46,7 @@ applicationGUI::applicationGUI(QWidget *parent)
 	ui.previousImage->setStyleSheet("background-color: lightGray;");
 	ui.sortOptions->setStyleSheet("background-color: white;");
 	ui.centralWidget->setStyleSheet("background-color: aqua;");
+
 	connect(ui.actionDirectory, SIGNAL(triggered()), SLOT(selectDirectory()));
 	connect(ui.actionLog_Location, SIGNAL(triggered()), SLOT(selectLogLocation()));
 	connect(ui.actionImage, SIGNAL(triggered()), SLOT(selectFile()));
@@ -62,6 +67,7 @@ applicationGUI::applicationGUI(QWidget *parent)
 	file.close();
 }
 
+// Function for setting the output location of the log file
 void applicationGUI::selectLogLocation() {
 	logLocation = QFileDialog::getExistingDirectory(this, "Select Directory", logLocation);
 	logLocationConv = logLocation.toLocal8Bit().constData();
@@ -79,6 +85,7 @@ void applicationGUI::selectLogLocation() {
 	}
 }
 
+// Function for sorting vector
 void applicationGUI::updateSortType() {
 	sortType = ui.sortOptions->currentIndex();
 	ui.sortOptions->setEnabled(false);
@@ -86,6 +93,7 @@ void applicationGUI::updateSortType() {
 	updateGUI();
 }
 
+// Function to toggle 'spot mode'
 void applicationGUI::toggleSpotMode() {
 	if (viewThresh == true) {
 		viewThresh = false;
@@ -96,27 +104,31 @@ void applicationGUI::toggleSpotMode() {
 	updateGUI();
 }
 
+// Function to sort vector by file name
 bool compareByName(const imageContents &a, const imageContents &b)
 {
 	return a.fileName < b.fileName;
 }
 
+// Function to sort vector by spot score
 bool compareBySpot(const imageContents &a, const imageContents &b)
 {
 	return a.spotScore < b.spotScore;
 }
 
+// Function to film vector by aesthetic score
 bool compareByFilm(const imageContents &a, const imageContents &b)
 {
 	return a.filmScore < b.filmScore;
 }
 
+// Function to sort vector by aesthetic score
 bool compareByAesthetic(const imageContents &a, const imageContents &b)
 {
 	return a.aestheticScore < b.aestheticScore;
 }
 
-
+// Function to update the GUI
 void applicationGUI::updateGUI() {
 	switch (sortType) {
 	case 1:
@@ -189,6 +201,7 @@ void applicationGUI::updateGUI() {
 	ui.textBrowser->setText(fullPrint.readAll());
 }
 
+// Function to select a directory of images for processing
 void applicationGUI::selectDirectory() {
 	dir_name = QFileDialog::getExistingDirectory(this, "Select Directory", QDir::homePath());
 	std::string conversionDirectory = dir_name.toLocal8Bit().constData();
@@ -222,6 +235,7 @@ void applicationGUI::selectDirectory() {
 	}
 }
 
+// Function to select an image file for processing
 void applicationGUI::selectFile() {
 	QString file_name = QFileDialog::getOpenFileName(this, "Select File", QDir::homePath());
 	std::string conversionDirectory = file_name.toLocal8Bit().constData();
@@ -242,6 +256,7 @@ void applicationGUI::selectFile() {
 	}
 }
 
+// Function to view next image
 void applicationGUI::nextImage() {
 	if (currentImage < (imageStore.size() - 1)) {
 		currentImage++;
@@ -252,6 +267,7 @@ void applicationGUI::nextImage() {
 	updateGUI();
 }
 
+// Function to view previous image
 void applicationGUI::prevImage() {
 	if (currentImage > 1) {
 		currentImage--;
@@ -262,6 +278,7 @@ void applicationGUI::prevImage() {
 	updateGUI();
 }
 
+// Function to save histogram image file
 void applicationGUI::saveHist() {
 	dir_name = QFileDialog::getExistingDirectory(this, "Select Directory", QDir::homePath());
 	if (dir_name != QDir::homePath() && dir_name != NULL) {
@@ -282,6 +299,7 @@ void applicationGUI::saveHist() {
 	}
 }
 
+// Function to save results text file
 void applicationGUI::saveResults() {
 	dir_name = QFileDialog::getExistingDirectory(this, "Select Directory", QDir::homePath());
 	if (dir_name != QDir::homePath() && dir_name != NULL) {
@@ -308,6 +326,7 @@ void applicationGUI::saveResults() {
 	}
 }
 
+// Function to save all contents currently stored within the vector
 void applicationGUI::saveAll() {
 	int i;
 	dir_name = QFileDialog::getExistingDirectory(this, "Select Directory", QDir::homePath());
@@ -343,10 +362,12 @@ void applicationGUI::saveAll() {
 	}
 }
 
+// Function for obtaining user input for editing the histogram
 void applicationGUI::editHistogram()
 {
 	histogramSettingsDialog test;
 	test.setModal(true);
+	// Set GUI elements to current settings
 	test.optionDataScale->setText(QString::number(dataScale));
 	test.optionThreshold->setText(QString::number(cThreshold));
 	test.optionScalePXI->setText(QString::number(perXScale));
@@ -356,6 +377,7 @@ void applicationGUI::editHistogram()
 	test.optionSmoothedLine->setChecked(smoothedLine);
 	test.optionPercentage->setCurrentIndex(pixelPercentage);
 	test.exec();
+	// Retrieve new settings from GUI elements
 	dataScale = test.optionDataScale->text().toDouble();
 	lineGraph = test.optionLineGraph->isChecked();
 	pixelPercentage = test.optionPercentage->currentIndex();
@@ -375,6 +397,7 @@ void applicationGUI::editHistogram()
 	updateGUI();
 }
 
+// Function to view the log file within the GUI
 void applicationGUI::viewLogFile() {
 	logFileDisplay test;
 	test.setModal(true);
@@ -390,6 +413,7 @@ void applicationGUI::viewLogFile() {
 	test.exec();
 }
 
+// Function for 'pop contents'
 void applicationGUI::popUpDisplay() {
 	outImageDisplay* test = new outImageDisplay(this);
 

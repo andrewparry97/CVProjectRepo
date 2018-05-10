@@ -1,5 +1,6 @@
 #pragma once
 
+// Include necessary libraries
 #include <QtWidgets/QMainWindow>
 #include "ui_GUIPractice.h"
 #include "histogramSettingsDialog.h"
